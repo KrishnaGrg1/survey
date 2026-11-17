@@ -1,0 +1,57 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum SurveyStatus {
+  draft
+  published
+  closed
+}
+
+model Survey {
+  id             String          @id @default(uuid())
+  slug           String          @unique
+  title          String
+  description    String          @default("")
+  status         SurveyStatus    @default(draft)
+  currentVersion Int             @default(1)
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  versions       SurveyVersion[]
+  responses      Response[]
+}
+
+model SurveyVersion {
+  id        String     @id @default(uuid())
+  surveyId  String
+  survey    Survey     @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  version   Int
+  schema    Json // { questions: Question[] }
+  createdAt DateTime   @default(now())
+  responses Response[]
+
+  @@unique([surveyId, version])
+}
+
+model Response {
+  id              String        @id @default(uuid())
+  surveyId        String
+  survey          Survey        @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  surveyVersionId String
+  surveyVersion   SurveyVersion @relation(fields: [surveyVersionId], references: [id])
+  answers         Json // { [questionId]: string | string[] | number }
+  submittedAt     DateTime      @default(now())
+
+  @@index([surveyId, submittedAt])
+}
+
+model Admin {
+  id           String @id @default(uuid())
+  email        String @unique
+  passwordHash String
+}

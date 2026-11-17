@@ -1,0 +1,30 @@
+{
+  "bundler": "vite",
+  "projectName": "survey",
+  "mode": "file-router",
+  "typescript": true,
+  "packageManager": "bun",
+  "includeExamples": false,
+  "tailwind": true,
+  "projectPreset": "default",
+  "routerOnly": false,
+  "addOnOptions": {
+    "prisma": {
+      "database": "postgres"
+    }
+  },
+  "git": false,
+  "install": true,
+  "intent": true,
+  "version": 1,
+  "framework": "react",
+  "chosenAddOns": [
+    "eslint",
+    "prisma",
+    "form",
+    "shadcn",
+    "table",
+    "better-auth",
+    "tanstack-query"
+  ]
+}
