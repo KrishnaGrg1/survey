@@ -1,6 +1,6 @@
-import { submitSurvey } from "#/lib/services/public-survery.service";
+import { getPublicSurveyBySlug, submitSurvey } from "#/lib/services/public-survery.service";
 import type { SubmitSurveyPayload } from "#/lib/types/public-suvery.type";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export function useSubmitSurvey(slug: string) {
@@ -17,5 +17,11 @@ export function useSubmitSurvey(slug: string) {
     },
   })
 }
-
-
+// GET PUBLIC SURVEY
+export function useGetPublicSurveyBySlug(slug: string) {
+  return useQuery({
+    queryKey: ['public-survey', slug],
+    queryFn: () => getPublicSurveyBySlug(slug),
+    enabled: !!slug,
+  })
+}

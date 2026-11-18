@@ -6,14 +6,12 @@ import { Textarea } from '#/components/ui/textarea'
 import { Checkbox } from '#/components/ui/checkbox'
 import { RadioGroup, RadioGroupItem } from '#/components/ui/radio-group'
 import { toast } from 'sonner'
-import type {} from /* Question, Condition */ '#/lib/schema/survey'
-import { getPublicSurveyBySlug } from '#/lib/services/public-survery.service'
-import { useSubmitSurvey } from '#/hooks/use-public-survey'
+import {
+  useGetPublicSurveyBySlug,
+  useSubmitSurvey,
+} from '#/hooks/use-public-survey'
 
 export const Route = createFileRoute('/s/$slug')({
-  loader: async ({ params }) => {
-    return getPublicSurveyBySlug(params.slug)
-  },
   component: RouteComponent,
 })
 
@@ -40,18 +38,53 @@ function isVisible(q: any, answers: Record<string, unknown>) {
 }
 
 function RouteComponent() {
-  const data = Route.useLoaderData()
-  const survey = data?.data
-  const version = (survey as any)?.versions?.[0] as any
+  const { slug } = Route.useParams()
+
+  const {
+    data: response,
+    isLoading,
+    isError,
+    error,
+  } = useGetPublicSurveyBySlug(slug)
+
+  const survey = response?.data
+  const version = survey?.versions?.at(0) as any
   const questions: any[] = version?.schema?.questions ?? []
 
   const [answers, setAnswers] = useState<Record<string, unknown>>({})
   const [submitted, setSubmitted] = useState(false)
 
-  const { slug } = Route.useParams()
-
   const { mutateAsync, isPending } = useSubmitSurvey(slug)
 
+  if (isLoading) {
+    return (
+      <div className="page-wrap py-10">
+        <p className="text-muted-foreground">Loading survey...</p>
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="page-wrap py-10">
+        <p className="text-destructive">
+          {error instanceof Error ? error.message : 'Failed to load survey'}
+        </p>
+      </div>
+    )
+  }
+
+  if (!survey) {
+    return <div className="page-wrap py-10">Survey not found</div>
+  }
+
+  if (survey.status !== 'published') {
+    return (
+      <div className="page-wrap py-10">
+        This survey is not accepting responses
+      </div>
+    )
+  }
   if (survey?.status !== 'published')
     return (
       <div className="page-wrap py-10">
