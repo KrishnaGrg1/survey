@@ -10,27 +10,36 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AdminRouteRouteImport } from './routes/admin/route'
 import { Route as authLoginRouteImport } from './routes/(auth)/login'
+import { Route as authRegisterRouteImport } from './routes/(auth)/register'
 import { Route as ApiHealthRouteImport } from './routes/api/health'
 import { Route as SSlugRouteImport } from './routes/s/$slug'
+import { Route as AdminSurveysIndexRouteImport } from './routes/admin/surveys/index'
+import { Route as AdminSurveysNewRouteImport } from './routes/admin/surveys/new'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as ApiSurveysIndexRouteImport } from './routes/api/surveys/index'
 import { Route as AdminSurveysIdIndexRouteImport } from './routes/admin/surveys/$id/index'
 import { Route as AdminSurveysIdResultRouteImport } from './routes/admin/surveys/$id/result'
+import { Route as ApiSurveysIdIndexRouteImport } from './routes/api/surveys/$id/index'
+import { Route as ApiSurveysIdAnalyticsRouteImport } from './routes/api/surveys/$id/analytics'
+import { Route as ApiSurveysIdPublishRouteImport } from './routes/api/surveys/$id/publish'
+import { Route as ApiSurveysIdResponsesRouteImport } from './routes/api/surveys/$id/responses'
+import { Route as ApiPublicSurveysSlugIndexRouteImport } from './routes/api/public/surveys/$slug/index'
+import { Route as ApiPublicSurveysSlugResponseRouteImport } from './routes/api/public/surveys/$slug/response'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminRouteRoute = AdminRouteRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const authLoginRoute = authLoginRouteImport.update({
   id: '/(auth)/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const authRegisterRoute = authRegisterRouteImport.update({
+  id: '/(auth)/register',
+  path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiHealthRoute = ApiHealthRouteImport.update({
@@ -43,93 +52,205 @@ const SSlugRoute = SSlugRouteImport.update({
   path: '/s/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminSurveysIndexRoute = AdminSurveysIndexRouteImport.update({
+  id: '/admin/surveys/',
+  path: '/admin/surveys/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminSurveysNewRoute = AdminSurveysNewRouteImport.update({
+  id: '/admin/surveys/new',
+  path: '/admin/surveys/new',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   id: '/api/auth/$',
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSurveysIndexRoute = ApiSurveysIndexRouteImport.update({
+  id: '/api/surveys/',
+  path: '/api/surveys/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminSurveysIdIndexRoute = AdminSurveysIdIndexRouteImport.update({
-  id: '/surveys/$id/',
-  path: '/surveys/$id/',
-  getParentRoute: () => AdminRouteRoute,
+  id: '/admin/surveys/$id/',
+  path: '/admin/surveys/$id/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminSurveysIdResultRoute = AdminSurveysIdResultRouteImport.update({
-  id: '/surveys/$id/result',
-  path: '/surveys/$id/result',
-  getParentRoute: () => AdminRouteRoute,
+  id: '/admin/surveys/$id/result',
+  path: '/admin/surveys/$id/result',
+  getParentRoute: () => rootRouteImport,
 } as any)
+const ApiSurveysIdIndexRoute = ApiSurveysIdIndexRouteImport.update({
+  id: '/api/surveys/$id/',
+  path: '/api/surveys/$id/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSurveysIdAnalyticsRoute = ApiSurveysIdAnalyticsRouteImport.update({
+  id: '/api/surveys/$id/analytics',
+  path: '/api/surveys/$id/analytics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSurveysIdPublishRoute = ApiSurveysIdPublishRouteImport.update({
+  id: '/api/surveys/$id/publish',
+  path: '/api/surveys/$id/publish',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiSurveysIdResponsesRoute = ApiSurveysIdResponsesRouteImport.update({
+  id: '/api/surveys/$id/responses',
+  path: '/api/surveys/$id/responses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicSurveysSlugIndexRoute =
+  ApiPublicSurveysSlugIndexRouteImport.update({
+    id: '/api/public/surveys/$slug/',
+    path: '/api/public/surveys/$slug/',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiPublicSurveysSlugResponseRoute =
+  ApiPublicSurveysSlugResponseRouteImport.update({
+    id: '/api/public/surveys/$slug/response',
+    path: '/api/public/surveys/$slug/response',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRouteWithChildren
   '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
   '/api/health': typeof ApiHealthRoute
   '/s/$slug': typeof SSlugRoute
+  '/admin/surveys/new': typeof AdminSurveysNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/surveys/': typeof AdminSurveysIndexRoute
+  '/api/surveys/': typeof ApiSurveysIndexRoute
   '/admin/surveys/$id/result': typeof AdminSurveysIdResultRoute
+  '/api/surveys/$id/analytics': typeof ApiSurveysIdAnalyticsRoute
+  '/api/surveys/$id/publish': typeof ApiSurveysIdPublishRoute
+  '/api/surveys/$id/responses': typeof ApiSurveysIdResponsesRoute
   '/admin/surveys/$id/': typeof AdminSurveysIdIndexRoute
+  '/api/surveys/$id/': typeof ApiSurveysIdIndexRoute
+  '/api/public/surveys/$slug/response': typeof ApiPublicSurveysSlugResponseRoute
+  '/api/public/surveys/$slug/': typeof ApiPublicSurveysSlugIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRouteWithChildren
   '/login': typeof authLoginRoute
+  '/register': typeof authRegisterRoute
   '/api/health': typeof ApiHealthRoute
   '/s/$slug': typeof SSlugRoute
+  '/admin/surveys/new': typeof AdminSurveysNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/surveys': typeof AdminSurveysIndexRoute
+  '/api/surveys': typeof ApiSurveysIndexRoute
   '/admin/surveys/$id/result': typeof AdminSurveysIdResultRoute
+  '/api/surveys/$id/analytics': typeof ApiSurveysIdAnalyticsRoute
+  '/api/surveys/$id/publish': typeof ApiSurveysIdPublishRoute
+  '/api/surveys/$id/responses': typeof ApiSurveysIdResponsesRoute
   '/admin/surveys/$id': typeof AdminSurveysIdIndexRoute
+  '/api/surveys/$id': typeof ApiSurveysIdIndexRoute
+  '/api/public/surveys/$slug/response': typeof ApiPublicSurveysSlugResponseRoute
+  '/api/public/surveys/$slug': typeof ApiPublicSurveysSlugIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteRouteWithChildren
   '/(auth)/login': typeof authLoginRoute
+  '/(auth)/register': typeof authRegisterRoute
   '/api/health': typeof ApiHealthRoute
   '/s/$slug': typeof SSlugRoute
+  '/admin/surveys/new': typeof AdminSurveysNewRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/admin/surveys/': typeof AdminSurveysIndexRoute
+  '/api/surveys/': typeof ApiSurveysIndexRoute
   '/admin/surveys/$id/result': typeof AdminSurveysIdResultRoute
+  '/api/surveys/$id/analytics': typeof ApiSurveysIdAnalyticsRoute
+  '/api/surveys/$id/publish': typeof ApiSurveysIdPublishRoute
+  '/api/surveys/$id/responses': typeof ApiSurveysIdResponsesRoute
   '/admin/surveys/$id/': typeof AdminSurveysIdIndexRoute
+  '/api/surveys/$id/': typeof ApiSurveysIdIndexRoute
+  '/api/public/surveys/$slug/response': typeof ApiPublicSurveysSlugResponseRoute
+  '/api/public/surveys/$slug/': typeof ApiPublicSurveysSlugIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/admin'
     | '/login'
+    | '/register'
     | '/api/health'
     | '/s/$slug'
+    | '/admin/surveys/new'
     | '/api/auth/$'
+    | '/admin/surveys/'
+    | '/api/surveys/'
     | '/admin/surveys/$id/result'
+    | '/api/surveys/$id/analytics'
+    | '/api/surveys/$id/publish'
+    | '/api/surveys/$id/responses'
     | '/admin/surveys/$id/'
+    | '/api/surveys/$id/'
+    | '/api/public/surveys/$slug/response'
+    | '/api/public/surveys/$slug/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/login'
+    | '/register'
     | '/api/health'
     | '/s/$slug'
+    | '/admin/surveys/new'
     | '/api/auth/$'
+    | '/admin/surveys'
+    | '/api/surveys'
     | '/admin/surveys/$id/result'
+    | '/api/surveys/$id/analytics'
+    | '/api/surveys/$id/publish'
+    | '/api/surveys/$id/responses'
     | '/admin/surveys/$id'
+    | '/api/surveys/$id'
+    | '/api/public/surveys/$slug/response'
+    | '/api/public/surveys/$slug'
   id:
     | '__root__'
     | '/'
-    | '/admin'
     | '/(auth)/login'
+    | '/(auth)/register'
     | '/api/health'
     | '/s/$slug'
+    | '/admin/surveys/new'
     | '/api/auth/$'
+    | '/admin/surveys/'
+    | '/api/surveys/'
     | '/admin/surveys/$id/result'
+    | '/api/surveys/$id/analytics'
+    | '/api/surveys/$id/publish'
+    | '/api/surveys/$id/responses'
     | '/admin/surveys/$id/'
+    | '/api/surveys/$id/'
+    | '/api/public/surveys/$slug/response'
+    | '/api/public/surveys/$slug/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRouteRoute: typeof AdminRouteRouteWithChildren
   authLoginRoute: typeof authLoginRoute
+  authRegisterRoute: typeof authRegisterRoute
   ApiHealthRoute: typeof ApiHealthRoute
   SSlugRoute: typeof SSlugRoute
+  AdminSurveysNewRoute: typeof AdminSurveysNewRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  AdminSurveysIndexRoute: typeof AdminSurveysIndexRoute
+  ApiSurveysIndexRoute: typeof ApiSurveysIndexRoute
+  AdminSurveysIdResultRoute: typeof AdminSurveysIdResultRoute
+  ApiSurveysIdAnalyticsRoute: typeof ApiSurveysIdAnalyticsRoute
+  ApiSurveysIdPublishRoute: typeof ApiSurveysIdPublishRoute
+  ApiSurveysIdResponsesRoute: typeof ApiSurveysIdResponsesRoute
+  AdminSurveysIdIndexRoute: typeof AdminSurveysIdIndexRoute
+  ApiSurveysIdIndexRoute: typeof ApiSurveysIdIndexRoute
+  ApiPublicSurveysSlugResponseRoute: typeof ApiPublicSurveysSlugResponseRoute
+  ApiPublicSurveysSlugIndexRoute: typeof ApiPublicSurveysSlugIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -141,18 +262,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/(auth)/login': {
       id: '/(auth)/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof authLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/(auth)/register': {
+      id: '/(auth)/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof authRegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/health': {
@@ -169,6 +290,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/surveys/': {
+      id: '/admin/surveys/'
+      path: '/admin/surveys'
+      fullPath: '/admin/surveys/'
+      preLoaderRoute: typeof AdminSurveysIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin/surveys/new': {
+      id: '/admin/surveys/new'
+      path: '/admin/surveys/new'
+      fullPath: '/admin/surveys/new'
+      preLoaderRoute: typeof AdminSurveysNewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/$': {
       id: '/api/auth/$'
       path: '/api/auth/$'
@@ -176,44 +311,90 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/surveys/': {
+      id: '/api/surveys/'
+      path: '/api/surveys'
+      fullPath: '/api/surveys/'
+      preLoaderRoute: typeof ApiSurveysIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/surveys/$id/': {
       id: '/admin/surveys/$id/'
-      path: '/surveys/$id'
+      path: '/admin/surveys/$id'
       fullPath: '/admin/surveys/$id/'
       preLoaderRoute: typeof AdminSurveysIdIndexRouteImport
-      parentRoute: typeof AdminRouteRoute
+      parentRoute: typeof rootRouteImport
     }
     '/admin/surveys/$id/result': {
       id: '/admin/surveys/$id/result'
-      path: '/surveys/$id/result'
+      path: '/admin/surveys/$id/result'
       fullPath: '/admin/surveys/$id/result'
       preLoaderRoute: typeof AdminSurveysIdResultRouteImport
-      parentRoute: typeof AdminRouteRoute
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/surveys/$id/': {
+      id: '/api/surveys/$id/'
+      path: '/api/surveys/$id'
+      fullPath: '/api/surveys/$id/'
+      preLoaderRoute: typeof ApiSurveysIdIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/surveys/$id/analytics': {
+      id: '/api/surveys/$id/analytics'
+      path: '/api/surveys/$id/analytics'
+      fullPath: '/api/surveys/$id/analytics'
+      preLoaderRoute: typeof ApiSurveysIdAnalyticsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/surveys/$id/publish': {
+      id: '/api/surveys/$id/publish'
+      path: '/api/surveys/$id/publish'
+      fullPath: '/api/surveys/$id/publish'
+      preLoaderRoute: typeof ApiSurveysIdPublishRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/surveys/$id/responses': {
+      id: '/api/surveys/$id/responses'
+      path: '/api/surveys/$id/responses'
+      fullPath: '/api/surveys/$id/responses'
+      preLoaderRoute: typeof ApiSurveysIdResponsesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/surveys/$slug/': {
+      id: '/api/public/surveys/$slug/'
+      path: '/api/public/surveys/$slug'
+      fullPath: '/api/public/surveys/$slug/'
+      preLoaderRoute: typeof ApiPublicSurveysSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/surveys/$slug/response': {
+      id: '/api/public/surveys/$slug/response'
+      path: '/api/public/surveys/$slug/response'
+      fullPath: '/api/public/surveys/$slug/response'
+      preLoaderRoute: typeof ApiPublicSurveysSlugResponseRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface AdminRouteRouteChildren {
-  AdminSurveysIdResultRoute: typeof AdminSurveysIdResultRoute
-  AdminSurveysIdIndexRoute: typeof AdminSurveysIdIndexRoute
-}
-
-const AdminRouteRouteChildren: AdminRouteRouteChildren = {
-  AdminSurveysIdResultRoute: AdminSurveysIdResultRoute,
-  AdminSurveysIdIndexRoute: AdminSurveysIdIndexRoute,
-}
-
-const AdminRouteRouteWithChildren = AdminRouteRoute._addFileChildren(
-  AdminRouteRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRouteRoute: AdminRouteRouteWithChildren,
   authLoginRoute: authLoginRoute,
+  authRegisterRoute: authRegisterRoute,
   ApiHealthRoute: ApiHealthRoute,
   SSlugRoute: SSlugRoute,
+  AdminSurveysNewRoute: AdminSurveysNewRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  AdminSurveysIndexRoute: AdminSurveysIndexRoute,
+  ApiSurveysIndexRoute: ApiSurveysIndexRoute,
+  AdminSurveysIdResultRoute: AdminSurveysIdResultRoute,
+  ApiSurveysIdAnalyticsRoute: ApiSurveysIdAnalyticsRoute,
+  ApiSurveysIdPublishRoute: ApiSurveysIdPublishRoute,
+  ApiSurveysIdResponsesRoute: ApiSurveysIdResponsesRoute,
+  AdminSurveysIdIndexRoute: AdminSurveysIdIndexRoute,
+  ApiSurveysIdIndexRoute: ApiSurveysIdIndexRoute,
+  ApiPublicSurveysSlugResponseRoute: ApiPublicSurveysSlugResponseRoute,
+  ApiPublicSurveysSlugIndexRoute: ApiPublicSurveysSlugIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

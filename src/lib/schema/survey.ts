@@ -47,7 +47,9 @@ export const createSurveySchema = z.object({
   questions: z.array(questionSchema).min(1).max(100),
 })
 
-
-export const getSurveyByIdSchema=z.object({
-    id:z.string().min(1)
+export const getSurveyByIdSchema = z.object({
+  id: z.string().min(1),
 })
+
+export type CreateSurveyInput = z.infer<typeof createSurveySchema>
+export type Question = z.infer<typeof questionSchema>

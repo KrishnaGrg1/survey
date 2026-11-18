@@ -1,230 +1,258 @@
-Welcome to your new TanStack Start app!
+# Dynamic Survey Builder & Analytics Platform
 
-# Getting Started
+A full-stack survey application for creating dynamic, conditional surveys, collecting anonymous public responses, and reviewing response-level analytics.
 
-To run this application:
+## Features
+
+### Admin survey builder
+
+- Create surveys with a title, slug, and description.
+- Add, remove, reorder, and configure text, single-choice, multi-choice, and rating questions.
+- Mark questions required or optional.
+- Add conditional visibility rules based on previous answers.
+- Publish or close surveys and share them through public URLs.
+- Review submission counts and per-question analytics.
+
+### Public survey form
+
+- Access surveys through a public `/s/:slug` URL without signing in.
+- Render questions dynamically from the saved JSON survey schema.
+- Re-evaluate conditional logic as answers change.
+- Perform client-side and server-side validation.
+- Submit responses separately from the survey schema.
+
+### Analytics
+
+- View the total number of responses.
+- View count and percentage breakdowns for single-choice and multi-choice questions.
+- View rating distributions and average ratings.
+- View submitted text responses.
+- Paginate response records for the admin view.
+
+### Authentication and security
+
+- Better Auth-backed admin authentication with PostgreSQL session and account storage.
+- Protected admin server functions and API routes.
+- Zod validation for survey schemas and submitted answers.
+- Public response submission rate limiting with Upstash Redis (when configured).
+- Prisma parameterized database access and cascading survey deletion.
+
+## Tech Stack
+
+- **Framework:** TanStack Start / TanStack Router
+- **Frontend:** React 19, Tailwind CSS 4, shadcn-style UI components, Lucide icons
+- **Forms and validation:** TanStack Form, React Hook Form, Zod
+- **Backend:** TanStack server functions and file-based API routes
+- **Database:** PostgreSQL
+- **ORM:** Prisma 7
+- **Authentication:** Better Auth
+- **Analytics:** Recharts-ready response aggregation and question-level calculations
+- **Spam protection:** Upstash Ratelimit + Redis
+- **Runtime/package manager:** Bun
+
+## Repository and Deployment
+
+- **GitHub:** https://github.com/KrishnaGrg1/survey
+- **Live URL:** Add your hosted deployment URL here
+- **Demo video:** Add your walkthrough URL here
+
+## Project Structure
+
+```text
+src/
+  components/survey/       Survey builder and question editor components
+  components/auth/         Login and registration UI
+  routes/admin/            Protected admin pages and analytics
+  routes/s/                Public survey rendering and submission page
+  routes/api/              Survey, public response, and health API routes
+  lib/schema/              Zod validation and survey data schemas
+  lib/server-fn-services/  Survey, response, analytics, and auth services
+  lib/services/            Supporting application services
+  generated/prisma/        Generated Prisma client
+prisma/
+  schema.prisma            Database models and relations
+  migrations/              PostgreSQL migrations
+  seed.ts                  Database seed script
+specs/
+  init.md                  Original implementation requirements
+  api_documentation.md     API endpoint documentation
+```
+
+## Database Design
+
+The PostgreSQL schema separates survey definitions from submitted answers:
+
+- `Survey` stores public metadata, status, slug, and the current version number.
+- `SurveyVersion` stores the immutable JSON question schema for each survey version.
+- `Response` stores each submission and its JSON answers, linked to the exact survey version.
+- `User`, `Session`, and `Account` support Better Auth authentication.
+- `SurveyStatus` supports `draft`, `published`, and `closed` states.
+
+Survey schemas are JSON to make question types and conditional rules flexible. Responses are JSON as well because answer shape differs by question type:
+
+```text
+text          -> string
+single_choice -> option ID as string
+multi_choice  -> array of option IDs
+rating        -> number from 1 to 5
+```
+
+An update to an existing published survey can create a new `SurveyVersion`, preserving historical response context. Analytics resolve answers through the response's linked version rather than assuming the latest schema is valid for every response.
+
+## Survey Schema Example
+
+```json
+{
+  "questions": [
+    {
+      "id": "experience",
+      "type": "single_choice",
+      "label": "How would you rate your experience?",
+      "required": true,
+      "options": [
+        { "id": "good", "label": "Good" },
+        { "id": "bad", "label": "Could be better" }
+      ]
+    },
+    {
+      "id": "details",
+      "type": "text",
+      "label": "Please provide details",
+      "required": false,
+      "showIf": {
+        "questionId": "experience",
+        "operator": "equals",
+        "value": "bad"
+      }
+    }
+  ]
+}
+```
+
+## Conditional Logic
+
+Supported condition operators are:
+
+- `equals`
+- `not_equals`
+- `includes`
+- `gte`
+- `lte`
+
+Hidden questions are skipped during both frontend rendering and server-side required-answer validation.
+
+## Local Setup
+
+### Prerequisites
+
+- Bun
+- PostgreSQL
+- An Upstash Redis database (optional for local rate limiting)
+
+### 1. Install dependencies
 
 ```bash
 bun install
-bun --bun run dev
 ```
 
-# Building For Production
+### 2. Configure environment variables
 
-To build this application for production:
+Copy `.env.example` to `.env` and provide the required values:
 
 ```bash
-bun --bun run build
+cp .env.example .env
 ```
 
-## Styling
+```dotenv
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE"
+BETTER_AUTH_URL="http://localhost:3000"
+BETTER_AUTH_SECRET="a-long-random-secret"
 
-This project uses [Tailwind CSS](https://tailwindcss.com/) for styling.
+UPSTASH_REDIS_REST_URL=""
+UPSTASH_REDIS_REST_TOKEN=""
+```
 
-### Removing Tailwind CSS
-
-If you prefer not to use Tailwind CSS:
-
-1. Remove the demo pages in `src/routes/demo/`
-2. Replace the Tailwind import in `src/styles.css` with your own styles
-3. Remove `tailwindcss()` from the plugins array in `vite.config.ts`
-4. Remove `@tailwindcss/vite` and `tailwindcss` from `package.json`
-
-## Linting & Formatting
-
-This project uses [eslint](https://eslint.org/) and [prettier](https://prettier.io/) for linting and formatting. Eslint is configured using [tanstack/eslint-config](https://tanstack.com/config/latest/docs/eslint). The following scripts are available:
+Generate a Better Auth secret when needed:
 
 ```bash
-bun --bun run lint
-bun --bun run format
-bun --bun run check
+bunx --bun @better-auth/cli secret
 ```
 
-## Shadcn
-
-Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
+### 3. Prepare the database
 
 ```bash
-pnpm dlx shadcn@latest add button
+bun run db:generate
+bun run db:migrate
+bun run db:seed
 ```
 
-## Setting up Better Auth
-
-1. Generate and set the `BETTER_AUTH_SECRET` environment variable in your `.env.local`:
-
-   ```bash
-   bunx --bun @better-auth/cli secret
-   ```
-
-2. Visit the [Better Auth documentation](https://www.better-auth.com) to unlock the full potential of authentication in your app.
-
-### Adding a Database (Optional)
-
-Better Auth can work in stateless mode, but to persist user data, add a database:
-
-```typescript
-// src/lib/auth.ts
-import { betterAuth } from 'better-auth'
-import { Pool } from 'pg'
-
-export const auth = betterAuth({
-  database: new Pool({
-    connectionString: process.env.DATABASE_URL,
-  }),
-  // ... rest of config
-})
-```
-
-Then run migrations:
+For an existing local database that should be synchronized without creating a migration, you can instead run:
 
 ```bash
-bunx --bun @better-auth/cli migrate
+bun run db:push
 ```
 
-## Routing
+### 4. Start the development server
 
-This project uses [TanStack Router](https://tanstack.com/router) with file-based routing. Routes are managed as files in `src/routes`.
-
-### Adding A Route
-
-To add a new route to your application just add a new file in the `./src/routes` directory.
-
-TanStack will automatically generate the content of the route file for you.
-
-Now that you have two routes you can use a `Link` component to navigate between them.
-
-### Adding Links
-
-To use SPA (Single Page Application) navigation you will need to import the `Link` component from `@tanstack/react-router`.
-
-```tsx
-import { Link } from '@tanstack/react-router'
+```bash
+bun run dev
 ```
 
-Then anywhere in your JSX you can use it like so:
+Open http://localhost:3000.
 
-```tsx
-<Link to="/about">About</Link>
+## Available Scripts
+
+```bash
+bun run dev           # Start the Vite/TanStack development server
+bun run build         # Create a production build
+bun run preview       # Preview the production build
+bun run lint          # Run ESLint
+bun run format        # Format files and fix lint issues
+bun run check         # Check formatting
+bun run db:generate   # Generate the Prisma client
+bun run db:push       # Synchronize the Prisma schema
+bun run db:migrate    # Create and apply a development migration
+bun run db:studio     # Open Prisma Studio
+bun run db:seed       # Seed the database
 ```
 
-This will create a link that will navigate to the `/about` route.
+## API Overview
 
-More information on the `Link` component can be found in the [Link documentation](https://tanstack.com/router/v1/docs/framework/react/api/router/linkComponent).
+A full endpoint reference is available in [`specs/api_documentation.md`](specs/api_documentation.md).
 
-### Using A Layout
+| Area | Example endpoints |
+| --- | --- |
+| Authentication | `POST /api/auth/login`, `POST /api/auth/logout` |
+| Survey administration | `GET/POST /api/surveys`, `GET/PUT/DELETE /api/surveys/:id` |
+| Publishing | `POST /api/surveys/:id/publish` |
+| Public access | `GET /api/public/surveys/:slug`, `POST /api/public/surveys/:slug/responses` |
+| Analytics | `GET /api/surveys/:id/analytics` |
+| Raw responses | `GET /api/surveys/:id/responses?page=1&limit=20` |
 
-In the File Based Routing setup the layout is located in `src/routes/__root.tsx`. Anything you add to the root route will appear in all the routes. The route content will appear in the JSX where you render `{children}` in the `shellComponent`.
+Admin endpoints require an authenticated Better Auth session. Public endpoints expose only published surveys and reject invalid or incomplete submissions.
 
-Here is an example layout that includes a header:
+## Validation and Assumptions
 
-```tsx
-import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
+- Public surveys do not require respondent authentication.
+- Text, single-choice, multi-choice, and rating questions are supported.
+- Rating questions use an integer scale of 1–5.
+- Slugs must be unique and URL-safe.
+- A conditional question is validated only when its visibility condition is currently satisfied.
+- Survey edits do not silently change historical answers: published survey changes are represented through versions.
+- Analytics are calculated from stored answers grouped by the question definition from the linked survey version.
+- Upstash configuration is optional in development, but public deployments should configure Redis-backed submission limits.
 
-export const Route = createRootRoute({
-  head: () => ({
-    meta: [
-      { charSet: 'utf-8' },
-      { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-      { title: 'My App' },
-    ],
-  }),
-  shellComponent: ({ children }) => (
-    <html lang="en">
-      <head>
-        <HeadContent />
-      </head>
-      <body>
-        <header>
-          <nav>
-            <Link to="/">Home</Link>
-            <Link to="/about">About</Link>
-          </nav>
-        </header>
-        {children}
-        <Scripts />
-      </body>
-    </html>
-  ),
-})
-```
+## Deployment
 
-More information on layouts can be found in the [Layouts documentation](https://tanstack.com/router/latest/docs/framework/react/guide/routing-concepts#layouts).
+Recommended production setup:
 
-## Server Functions
+1. Provision a managed PostgreSQL database.
+2. Set `DATABASE_URL`, `BETTER_AUTH_URL`, `BETTER_AUTH_SECRET`, `UPSTASH_REDIS_REST_URL`, and `UPSTASH_REDIS_REST_TOKEN` in the hosting provider.
+3. Run `bun run db:generate` and `bun run db:migrate` before startup.
+4. Set `BETTER_AUTH_URL` to the final HTTPS origin.
+5. Build and start the application using `bun run build` and the platform-specific Bun or Node-compatible start command.
 
-TanStack Start provides server functions that allow you to write server-side code that seamlessly integrates with your client components.
 
-```tsx
-import { createServerFn } from '@tanstack/react-start'
+## License
 
-const getServerTime = createServerFn({
-  method: 'GET',
-}).handler(async () => {
-  return new Date().toISOString()
-})
-
-// Use in a component
-function MyComponent() {
-  const [time, setTime] = useState('')
-
-  useEffect(() => {
-    getServerTime().then(setTime)
-  }, [])
-
-  return <div>Server time: {time}</div>
-}
-```
-
-## API Routes
-
-You can create API routes by using the `server` property in your route definitions:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-import { json } from '@tanstack/react-start'
-
-export const Route = createFileRoute('/api/hello')({
-  server: {
-    handlers: {
-      GET: () => json({ message: 'Hello, World!' }),
-    },
-  },
-})
-```
-
-## Data Fetching
-
-There are multiple ways to fetch data in your application. You can use TanStack Query to fetch data from a server. But you can also use the `loader` functionality built into TanStack Router to load the data for a route before it's rendered.
-
-For example:
-
-```tsx
-import { createFileRoute } from '@tanstack/react-router'
-
-export const Route = createFileRoute('/people')({
-  loader: async () => {
-    const response = await fetch('https://swapi.dev/api/people')
-    return response.json()
-  },
-  component: PeopleComponent,
-})
-
-function PeopleComponent() {
-  const data = Route.useLoaderData()
-  return (
-    <ul>
-      {data.results.map((person) => (
-        <li key={person.name}>{person.name}</li>
-      ))}
-    </ul>
-  )
-}
-```
-
-Loaders simplify your data fetching logic dramatically. Check out more information in the [Loader documentation](https://tanstack.com/router/latest/docs/framework/react/guide/data-loading#loader-parameters).
-
-# Learn More
-
-You can learn more about all of the offerings from TanStack in the [TanStack documentation](https://tanstack.com).
-
-For TanStack Start specific documentation, visit [TanStack Start](https://tanstack.com/start).
+Add your preferred license here.

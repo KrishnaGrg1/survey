@@ -1,7 +1,7 @@
-import z from "zod";
+import z from 'zod'
 
-export const getSurveyBySlugSchema=z.object({
-      slug: z
+export const getSurveyBySlugSchema = z.object({
+  slug: z
     .string()
     .trim()
     .min(3)
@@ -12,9 +12,8 @@ export const getSurveyBySlugSchema=z.object({
     ),
 })
 
-
 export const submitSurveySchema = z.object({
   surveyId: z.string().min(1),
   surveyVersionId: z.string().min(1),
   answers: z.record(z.string(), z.unknown()),
-});
+})

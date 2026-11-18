@@ -28,6 +28,7 @@ Build a full-stack application that allows administrators to create dynamic surv
 - **Client & Server Validation:**
   - Enforce required fields (accounting for hidden/skipped conditional questions).
   - Validate correct data types and constraints before submission.
+- **UI components:** Use the shadcn ui components and lucid react icons only if not available create components
 
 ### 3. Analytics Dashboard
 

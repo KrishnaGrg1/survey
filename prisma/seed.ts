@@ -1,19 +1,34 @@
 // src/db/seed.ts   run: npm run seed
 import { prisma } from '#/db'
-import bcrypt from 'bcryptjs'
+import { auth } from '#/lib/auth'
+
 import 'dotenv/config'
 // import { prisma } from '../lib/db'
 // import { hashPassword } from '../lib/auth'
 // import { createSurvey, setStatus } from '../services/surveys'
 
 async function main() {
-  const email = process.env.ADMIN_EMAIL!,
-    pw = process.env.ADMIN_PASSWORD!
-  await prisma.admin.upsert({
+  const email = "admin@test.com"
+  const password = "superadmin123"
+
+  const existingUser = await prisma.user.findUnique({
     where: { email },
-    update: {},
-    create: { email, passwordHash: await bcrypt.hash(pw, 10) },
   })
+
+  if (existingUser) {
+    console.log('Admin already exists')
+    return
+  }
+
+const data = await auth.api.signUpEmail({
+    body: {
+      email,
+      password,
+      name: 'Admin',
+    },
+  })
+  console.log('Admin created successfully',data)
+
   const s = await prisma.survey.create({
     data: {
       title: 'Product feedback demo',

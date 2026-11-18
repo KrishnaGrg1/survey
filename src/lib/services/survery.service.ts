@@ -1,235 +1,130 @@
-import { createServerFn } from '@tanstack/react-start'
-import { ensureSession } from './auth.service'
-import { createSurveySchema, getSurveyByIdSchema } from '../schema/survey'
-import { prisma } from '#/db'
-
-export const createSurvey = createServerFn({ method: 'POST' })
-  .validator((data) => createSurveySchema.parse(data))
-  .handler(async ({ data }) => {
-    try {
-      await ensureSession()
-      const survey = await prisma.survey.create({
-        data: {
-          title: data.title,
-          slug: data.slug,
-          description: data.description,
-          versions: {
-            create: {
-              version: 1,
-              schema: {
-                questions: data.questions,
-              },
-            },
-          },
-        },
-        include: {
-          versions: true,
-        },
-      })
-      return {
-        success: true,
-        message: 'Created survey successfully',
-        data: survey,
-      }
-    } catch (error: any) {
-      console.error(
-        'create survey error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  })
-
-  export const getAllsurveys=createServerFn({method:'GET'})
-  .handler(async () => {
-    try{
-      await ensureSession()
-      const surveys=await prisma.survey.findMany()
-      return {
-        success: true,
-        message: 'Get all survey successfully',
-        data: surveys,
-      }
-    }catch (error: any) {
-      console.error(
-        'get survery error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  })
+import { axiosInstance, getApiErrorMessage } from '#/lib/axios'
 
 
-
-    export const getSurveyById=createServerFn({method:'GET'})
-      .validator((data) => getSurveyByIdSchema.parse(data))
-  .handler(async ({data}) => {
-    try{
-      await ensureSession()
-      const surveys=await prisma.survey.findUnique({
-        where:{
-          id:data.id
-        }
-      })
-      return {
-        success: true,
-        message: 'Get survey successfully',
-        data: surveys,
-      }
-    }catch (error: any) {
-      console.error(
-        'get survery error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  })
+import type { GetPublicSurveyResponse } from '../types/public-suvery.type'
+import type{  GetAllSurveyResponse,   CreateSurveyPayload,   CreateSurveyResponse, PublishSurveyResponse, DeleteSurveyResponse, ResponseSurveryResponse, SurveryAnalyticResponse } from '../types/survery.type'
 
 
-  export const updateSurvey = createServerFn({ method: 'POST' })
-  .validator((data) => createSurveySchema.parse(data))
-  .handler(async ({ data }) => {
-    try {
-      await ensureSession()
-const survery=await prisma.survey.findUnique({
-  where:{
-    slug:data.slug
+export async function createSurvey(
+  payload: CreateSurveyPayload,
+): Promise<CreateSurveyResponse> {
+  try {
+    const { data } = await axiosInstance.post<CreateSurveyResponse>(
+      '/surveys',
+      payload,
+    )
+
+    return data
+  } catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to create survey'),
+    )
   }
-})
-if (!survery){
-  throw new Error("Survery not found to update")
 }
-      const updatedSurvey = await prisma.survey.update({
-        where:{
-          slug:data.slug
-        },
-        data: {
-          title: data.title,
-          slug: data.slug,
-          description: data.description,
-          versions: {
-            create: {
-              version: survery.currentVersion+1,
-              schema: {
-                questions: data.questions,
-              },
-            },
-          },
-        },
-        include: {
-          versions: true,
-        },
-      })
-      return {
-        success: true,
-        message: 'updated survey successfully',
-        data: updatedSurvey,
-      }
-    } catch (error: any) {
-      console.error(
-        'create survey error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  })
 
+export async function getAllsurveys() {
+ try {
+    const { data } = await axiosInstance.get<GetAllSurveyResponse>(
+      '/surveys',
+    )
 
-   export const deleteSurvey = createServerFn({ method: 'POST' })
-  .validator((data) => getSurveyByIdSchema.parse(data))
-  .handler(async ({ data }) => {
-    try {
-      await ensureSession()
-const survery=await prisma.survey.findUnique({
-  where:{
-    id:data.id
+    return data
+  } catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to create survey'),
+    )
+  } 
+}
+
+export async function getSurveryById(id:string){
+  try{
+    // const session=await getSession()
+    // console.log("session",session)
+     const { data } = await axiosInstance.get<GetPublicSurveyResponse>(
+      `/surveys/${id}`,
+      
+    )
+
+    return data 
   }
-})
-if (!survery){
-  throw new Error("Survery not found to update")
-}
- await prisma.survey.delete({
-        where:{
-          id:data.id
-        },
+  catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to create survey'),
+    )
+  } }
 
-      })
-      return {
-        success: true,
-        message: 'deleted  survey successfully',
 
-      }
-    } catch (error: any) {
-      console.error(
-        'create survey error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  })
+export async function updateSurvey(
+  id: string,
+  payload: CreateSurveyPayload,
+): Promise<CreateSurveyResponse> {
+  try {
+    const { data } = await axiosInstance.put<CreateSurveyResponse>(
+      `/surveys/${id}`,
+      payload,
+    )
 
- export const publishSurvey = createServerFn({ method: 'POST' })
-  .validator((data) => getSurveyByIdSchema.parse(data))
-  .handler(async ({ data }) => {
-    try {
-      await ensureSession()
-const survery=await prisma.survey.findUnique({
-  where:{
-  id:data.id
+    return data
+  } catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to update survey'),
+    )
   }
-})
-if (!survery){
-  throw new Error("Survery not found to update")
 }
-      const updatedSurvey = await prisma.survey.update({
-        where:{
-     id:data.id
-        },
-        data: {
-          status:"published"
-        },
 
-      })
-      return {
-        success: true,
-        message: 'published survey successfully',
-        data: updatedSurvey,
-      }
-    } catch (error: any) {
-      console.error(
-        'create survey error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  })
+export async function deleteSurvey(id:string){
+  try{
+    const res=await axiosInstance.delete<DeleteSurveyResponse>(`/surveys/${id}`)
+    return res
+
+  }
+catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to create survey'),
+    )
+  }
+}
+
+
+export async function publishSurvey(id:string){
+  try{
+    const res=await axiosInstance.post<PublishSurveyResponse>(`/surveys/${id}/publish`)
+    return res
+
+  }
+catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to create survey'),
+    )
+  }
+}
+
+
+export async function getSurveyAnalytic(id: string) {
+  try {
+    const { data } = await axiosInstance.get<SurveryAnalyticResponse>(
+      `/surveys/${id}/analytics`,
+    )
+
+    return data
+  } catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to fetch survey analytics'),
+    )
+  }
+}
+
+
+export async function getSurveyResponses(id: string) {
+  try {
+    const { data } = await axiosInstance.get<ResponseSurveryResponse>(
+      `/surveys/${id}/responses`,
+    )
+
+    return data
+  } catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to fetch survey responses'),
+    )
+  }
+}

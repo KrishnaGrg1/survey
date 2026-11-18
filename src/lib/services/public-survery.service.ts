@@ -1,88 +1,36 @@
-import { createServerFn } from "@tanstack/react-start"
+import { axiosInstance, getApiErrorMessage } from "../axios"
+import type { GetPublicSurveyResponse, SubmitSurveyPayload, SubmitSurveyResponse } from "../types/public-suvery.type"
 
-import { prisma } from "#/db"
-import { getSurveyBySlugSchema, submitSurveySchema } from "../schema/public.survery"
-import type { Prisma } from "#/generated/prisma/client"
+export const getPublicSurveyBySlug = async (
+  slug: string,
+): Promise<GetPublicSurveyResponse> => {
+  try {
+    const { data } = await axiosInstance.get<GetPublicSurveyResponse>(
+      `/public/surveys/${encodeURIComponent(slug)}`,
+    )
 
-export const getSurveyByslug=createServerFn({method:'GET'})
-      .validator((data) => getSurveyBySlugSchema.parse(data))
-  .handler(async ({data}) => {
-    try{
+    return data
+  } catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to fetch survey'),
+    )
+  }
+}
 
-      const surveys=await prisma.survey.findUnique({
-        where:{
-slug:data.slug
-        }
-      })
-      return {
-        success: true,
-        message: 'Get survey successfully',
-        data: surveys,
-      }
-    }catch (error: any) {
-      console.error(
-        'get survery error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  })
+export const submitSurvey = async (
+  slug: string,
+  payload: SubmitSurveyPayload,
+): Promise<SubmitSurveyResponse> => {
+  try {
+    const { data } = await axiosInstance.post<SubmitSurveyResponse>(
+      `/public/surveys/${encodeURIComponent(slug)}/response`,
+      payload,
+    )
 
-
- export const submitSurvery=createServerFn({method:'GET'})
-     .validator((data) => submitSurveySchema.parse(data))
-  .handler(async ({data}) => {
-    try{
-
-     const version = await prisma.surveyVersion.findFirst({
-      where: {
-        id: data.surveyVersionId,
-        surveyId: data.surveyId,
-      },
-      include: {
-        survey: true,
-      },
-    });
-
-    if (!version) {
-      throw new Error("Survey not found");
-    }
-    // Only published surveys can receive responses.
-    if (version.survey.status !== "published") {
-      throw new Error("This survey is not accepting responses");
-    }
-
-     // Save response.
-    const response = await prisma.response.create({
-      data: {
-        surveyId: data.surveyId,
-        surveyVersionId: data.surveyVersionId,
-        answers: data.answers as Prisma.InputJsonObject,
-      },
-    });
-      return {
-        success: true,
-        message: 'survey submitted successfully',
-        data: {
-        id: response.id,
-        submittedAt: response.submittedAt,
-      },
-      }
-    }catch (error: any) {
-      console.error(
-        'get survery error',
-        error?.response?.status,
-        error?.response?.data,
-      )
-      throw new Error(
-        error?.response?.data?.message ||
-          error?.message ||
-          'failed to create survey',
-      )
-    }
-  }) 
+    return data
+  } catch (error: unknown) {
+    throw new Error(
+      getApiErrorMessage(error, 'Failed to submit survey'),
+    )
+  }
+}
