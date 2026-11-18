@@ -53,8 +53,8 @@ A full-stack survey application for creating dynamic, conditional surveys, colle
 ## Repository and Deployment
 
 - **GitHub:** https://github.com/KrishnaGrg1/survey
-- **Live URL:** Add your hosted deployment URL here
-- **Demo video:** Add your walkthrough URL here
+- **Live application:** https://survey-pink-two.vercel.app
+- **Example public survey:** https://survey-pink-two.vercel.app/s/youtube-ads
 
 ## Project Structure
 
@@ -220,14 +220,34 @@ bun run db:seed       # Seed the database
 
 A full endpoint reference is available in [`specs/api_documentation.md`](specs/api_documentation.md).
 
-| Area | Example endpoints |
-| --- | --- |
-| Authentication | `POST /api/auth/login`, `POST /api/auth/logout` |
-| Survey administration | `GET/POST /api/surveys`, `GET/PUT/DELETE /api/surveys/:id` |
-| Publishing | `POST /api/surveys/:id/publish` |
-| Public access | `GET /api/public/surveys/:slug`, `POST /api/public/surveys/:slug/responses` |
-| Analytics | `GET /api/surveys/:id/analytics` |
-| Raw responses | `GET /api/surveys/:id/responses?page=1&limit=20` |
+### Implemented Application Routes
+
+| Route | Purpose | Live URL |
+| --- | --- | --- |
+| `/` | Application home page | https://survey-pink-two.vercel.app/ |
+| `/login` | Admin login | https://survey-pink-two.vercel.app/login |
+| `/register` | Admin registration | https://survey-pink-two.vercel.app/register |
+| `/admin/surveys` | List and manage surveys | https://survey-pink-two.vercel.app/admin/surveys |
+| `/admin/surveys/new` | Create a new survey | https://survey-pink-two.vercel.app/admin/surveys/new |
+| `/admin/surveys/:id` | Edit an existing survey | Replace `:id` with the survey ID |
+| `/admin/surveys/:id/result` | View response analytics | Replace `:id` with the survey ID |
+| `/s/:slug` | Public survey form | https://survey-pink-two.vercel.app/s/youtube-ads |
+
+### Implemented API Routes
+
+| Area | Method and endpoint | Purpose |
+| --- | --- | --- |
+| Health | `GET /api/health` | Check database connectivity and application health |
+| Authentication | `/api/auth/*` | Better Auth login, registration, logout, and session routes |
+| Survey list | `GET /api/surveys` | Retrieve all surveys and response counts |
+| Survey list/create | `POST /api/surveys` | Create a new survey draft |
+| Survey detail/update | `GET/PUT /api/surveys/:id` | Retrieve or update a survey |
+| Survey deletion | `DELETE /api/surveys/:id` | Delete a survey and related versions/responses |
+| Survey publishing | `POST /api/surveys/:id/publish` | Publish or close a survey |
+| Survey analytics | `GET /api/surveys/:id/analytics` | Retrieve aggregated analytics |
+| Survey responses | `GET /api/surveys/:id/responses` | Retrieve paginated response submissions |
+| Public survey | `GET /api/public/surveys/:slug` | Retrieve a published survey for public rendering |
+| Public submission | `POST /api/public/surveys/:slug/response` | Submit answers to a public survey |
 
 Admin endpoints require an authenticated Better Auth session. Public endpoints expose only published surveys and reject invalid or incomplete submissions.
 
