@@ -13,7 +13,7 @@ import {
 } from '#/components/ui/select'
 import { Switch } from '#/components/ui/switch'
 import { TrashIcon, GripVerticalIcon, PlusIcon } from 'lucide-react'
-import { cn } from 'cn'
+
 import type { Question, Condition } from '#/lib/schema/survey'
 
 type QuestionDraft = Question & { options?: { id: string; label: string }[] }
@@ -43,29 +43,39 @@ export function QuestionEditor({
     setLocal(question)
   }, [question])
 
-  const update = (patch: Partial<QuestionDraft>) => {
-    const next = { ...local, ...patch }
+  const update = <K extends keyof QuestionDraft>(
+    key: K,
+    value: QuestionDraft[K],
+  ) => {
+    const next = {
+      ...local,
+      [key]: value,
+    } as QuestionDraft
+
     setLocal(next)
     onChange(next)
   }
 
   const addOption = () => {
     const optionId = `opt_${Math.random().toString(36).slice(2, 9)}`
-    update({ options: [...(local.options ?? []), { id: optionId, label: '' }] })
+
+    update('options', [...(local.options ?? []), { id: optionId, label: '' }])
   }
 
   const updateOption = (optionId: string, label: string) => {
-    update({
-      options: local.options?.map((opt) =>
+    update(
+      'options',
+      (local.options ?? []).map((opt) =>
         opt.id === optionId ? { ...opt, label } : opt,
       ),
-    })
+    )
   }
 
   const removeOption = (optionId: string) => {
-    update({
-      options: local.options?.filter((opt) => opt.id !== optionId),
-    })
+    update(
+      'options',
+      (local.options ?? []).filter((opt) => opt.id !== optionId),
+    )
   }
 
   return (
@@ -112,9 +122,7 @@ export function QuestionEditor({
           <Label>Question Type</Label>
           <Select
             value={local.type}
-            onValueChange={(value) =>
-              update({ type: value as Question['type'] })
-            }
+            onValueChange={(value) => update('type', value as Question['type'])}
           >
             <SelectTrigger>
               <SelectValue placeholder="Select type" />
@@ -132,7 +140,7 @@ export function QuestionEditor({
           <Label>Label</Label>
           <Input
             value={local.label}
-            onChange={(e) => update({ label: e.target.value })}
+            onChange={(e) => update('label', e.target.value)}
             placeholder="Enter your question"
           />
         </div>
@@ -174,7 +182,7 @@ export function QuestionEditor({
         <div className="flex items-center gap-2">
           <Switch
             checked={local.required}
-            onCheckedChange={(checked) => update({ required: checked })}
+            onCheckedChange={(checked) => update('required', checked)}
           />
           <Label>Required</Label>
         </div>
@@ -185,14 +193,10 @@ export function QuestionEditor({
             <Select
               value={local.showIf?.questionId ?? ''}
               onValueChange={(questionId) =>
-                update({
-                  showIf: local.showIf
-                    ? { ...local.showIf, questionId }
-                    : {
-                        questionId,
-                        operator: 'equals' as Condition['operator'],
-                        value: '',
-                      },
+                update('showIf', {
+                  questionId,
+                  operator: local.showIf?.operator ?? 'equals',
+                  value: local.showIf?.value ?? '',
                 })
               }
             >
@@ -214,14 +218,14 @@ export function QuestionEditor({
               <>
                 <Select
                   value={local.showIf.operator}
-                  onValueChange={(operator) =>
-                    update({
-                      showIf: {
-                        ...local.showIf,
-                        operator: operator as Condition['operator'],
-                      },
+                  onValueChange={(operator) => {
+                    if (!local.showIf) return
+
+                    update('showIf', {
+                      ...local.showIf,
+                      operator: operator as Condition['operator'],
                     })
-                  }
+                  }}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Operator" />
@@ -237,18 +241,18 @@ export function QuestionEditor({
 
                 <Input
                   value={String(local.showIf.value ?? '')}
-                  onChange={(e) =>
-                    update({
-                      showIf: {
-                        ...local.showIf,
-                        value:
-                          local.showIf.operator === 'gte' ||
-                          local.showIf.operator === 'lte'
-                            ? Number(e.target.value)
-                            : e.target.value,
-                      },
+                  onChange={(e) => {
+                    if (!local.showIf) return
+
+                    update('showIf', {
+                      ...local.showIf,
+                      value:
+                        local.showIf.operator === 'gte' ||
+                        local.showIf.operator === 'lte'
+                          ? Number(e.target.value)
+                          : e.target.value,
                     })
-                  }
+                  }}
                   placeholder="Value"
                 />
               </>

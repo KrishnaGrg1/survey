@@ -13,6 +13,7 @@ import { Input } from '#/components/ui/input'
 import { Label } from '#/components/ui/label'
 import { Textarea } from '#/components/ui/textarea'
 import { useCreateSurvey } from '#/hooks/use-survery'
+import { useNavigate } from '@tanstack/react-router'
 
 const inputClass = (hasError: boolean) =>
   cn(
@@ -28,7 +29,7 @@ type FormValues = z.input<typeof createSurveySchema>
 
 export default function CreateSurveyForm() {
   const { mutateAsync, isPending } = useCreateSurvey()
-
+  const navigate = useNavigate()
   const [questions, setQuestions] = useState<FormValues['questions']>([])
 
   const form = useForm({
@@ -47,8 +48,8 @@ export default function CreateSurveyForm() {
       try {
         const result = createSurveySchema.parse(value)
 
-        await mutateAsync(result)
-
+        const res = await mutateAsync(result)
+        navigate({ to: `/admin/surveys/${res.data.id}` })
         toast.success('Survey created successfully')
       } catch (error) {
         if (error instanceof z.ZodError) {

@@ -369,3 +369,181 @@ a {
     color: var(--foreground);
   }
 }
+
+
+/* =================================
+   PREMIUM UI DESIGN SYSTEM
+================================= */
+
+:root {
+  --radius: 0.85rem;
+
+  --shadow-soft:
+    0 4px 12px rgba(23, 58, 64, 0.04),
+    0 12px 30px rgba(23, 58, 64, 0.06);
+
+  --shadow-hover:
+    0 8px 20px rgba(23, 58, 64, 0.07),
+    0 20px 40px rgba(23, 58, 64, 0.1);
+}
+
+/* Page layout */
+
+.page-wrap {
+  width: min(1120px, calc(100% - 2.5rem));
+  margin-inline: auto;
+  padding-block: 2rem;
+}
+
+/* Section headings */
+
+.section-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--sea-ink);
+}
+
+.section-description {
+  color: var(--sea-ink-soft);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+/* Premium cards */
+
+.island-shell {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+
+  background: var(--surface-strong);
+
+  box-shadow:
+    0 1px 0 var(--inset-glint) inset,
+    var(--shadow-soft);
+
+  backdrop-filter: blur(12px);
+
+  transition:
+    transform 200ms ease,
+    box-shadow 200ms ease,
+    border-color 200ms ease;
+}
+
+.island-shell:hover {
+  border-color: color-mix(
+    in oklab,
+    var(--lagoon) 35%,
+    var(--line)
+  );
+}
+
+/* Interactive cards */
+
+.feature-card {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  transition: all 220ms ease;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-hover);
+}
+
+/* Buttons */
+
+.btn-primary {
+  background: var(--palm);
+  color: white;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: all 180ms ease;
+}
+
+.btn-primary:hover {
+  background: var(--lagoon-deep);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: var(--chip-bg);
+  color: var(--sea-ink);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+}
+
+/* Inputs */
+
+input:not([type="checkbox"]),
+textarea,
+select {
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: none;
+  border-color: var(--lagoon);
+  box-shadow: 0 0 0 3px
+    color-mix(in oklab, var(--lagoon) 18%, transparent);
+}
+
+/* Status indicators */
+
+.status-published {
+  color: #26734d;
+  background: rgba(79, 184, 178, 0.14);
+}
+
+.status-draft {
+  color: #9b722a;
+  background: rgba(231, 190, 107, 0.18);
+}
+
+/* Empty states */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem 1.5rem;
+  border: 1px dashed var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+}
+
+/* Smooth animations */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-up {
+  animation: fade-up 450ms ease both;
+}
+
+/* Accessibility */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
