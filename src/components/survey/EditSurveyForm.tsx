@@ -39,7 +39,7 @@ export default function EditSurveyForm({ survey }: Props) {
       slug: survey.slug ?? '',
       description: survey.description ?? '',
       questions: schema?.questions ?? [],
-    } as CreateSurveyPayload,
+    },
 
     onSubmit: async ({ value }) => {
       await update({

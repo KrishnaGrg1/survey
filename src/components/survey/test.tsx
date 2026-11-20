@@ -50,7 +50,7 @@ export function QuestionEditor({
     const next = {
       ...local,
       [key]: value,
-    } as QuestionDraft
+    }
 
     setLocal(next)
     onChange(next)

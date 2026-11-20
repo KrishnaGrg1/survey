@@ -54,4 +54,4 @@ export const getSurveyByIdSchema = z.object({
 export type CreateSurveyInput = z.infer<typeof createSurveySchema>
 export type Question = z.infer<typeof questionSchema>
 
-export type Condition=z.infer<typeof conditionSchema>
+export type Condition = z.infer<typeof conditionSchema>

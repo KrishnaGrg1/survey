@@ -8,8 +8,8 @@ import 'dotenv/config'
 // import { createSurvey, setStatus } from '../services/surveys'
 
 async function main() {
-  const email = "admin@test.com"
-  const password = "superadmin123"
+  const email = 'admin@test.com'
+  const password = 'superadmin123'
 
   const existingUser = await prisma.user.findUnique({
     where: { email },
@@ -20,14 +20,14 @@ async function main() {
     return
   }
 
-const data = await auth.api.signUpEmail({
+  const data = await auth.api.signUpEmail({
     body: {
       email,
       password,
       name: 'Admin',
     },
   })
-  console.log('Admin created successfully',data)
+  console.log('Admin created successfully', data)
 
   const s = await prisma.survey.create({
     data: {

@@ -13,7 +13,7 @@ export const Route = createFileRoute('/api/surveys/$id/analytics')({
         try {
           await ensureSession()
           const { id } = params
-          
+
           const survey = await prisma.survey.findUnique({
             where: { id },
             include: {

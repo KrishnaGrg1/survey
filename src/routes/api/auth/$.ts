@@ -13,8 +13,7 @@ async function handleAuthRequest({ request }: { request: Request }) {
   const pathname = new URL(request.url).pathname
   const identifier = `${ip}:${pathname}`
 
-  const { success, limit, remaining, reset } =
-    await ratelimit.limit(identifier)
+  const { success, limit, remaining, reset } = await ratelimit.limit(identifier)
 
   // Rate limit exceeded
   if (!success) {

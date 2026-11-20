@@ -27,8 +27,6 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 })
 
-
-
 export function getApiErrorMessage(
   error: unknown,
   fallback = 'Something went wrong',

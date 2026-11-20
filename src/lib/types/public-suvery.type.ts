@@ -1,4 +1,4 @@
-import type { Survey, SurveyVersion } from "#/generated/prisma/client"
+import type { Survey, SurveyVersion } from '#/generated/prisma/client'
 
 export interface GetPublicSurveyResponse {
   success: boolean
@@ -7,7 +7,6 @@ export interface GetPublicSurveyResponse {
     versions: SurveyVersion[]
   }
 }
-
 
 export type SubmitSurveyPayload = {
   surveyId: string
@@ -23,7 +22,3 @@ export type SubmitSurveyResponse = {
     submittedAt: string
   }
 }
-
-
-
-

@@ -222,32 +222,32 @@ A full endpoint reference is available in [`specs/api_documentation.md`](specs/a
 
 ### Implemented Application Routes
 
-| Route | Purpose | Live URL |
-| --- | --- | --- |
-| `/` | Application home page | https://survey-pink-two.vercel.app/ |
-| `/login` | Admin login | https://survey-pink-two.vercel.app/login |
-| `/register` | Admin registration | https://survey-pink-two.vercel.app/register |
-| `/admin/surveys` | List and manage surveys | https://survey-pink-two.vercel.app/admin/surveys |
-| `/admin/surveys/new` | Create a new survey | https://survey-pink-two.vercel.app/admin/surveys/new |
-| `/admin/surveys/:id` | Edit an existing survey | Replace `:id` with the survey ID |
-| `/admin/surveys/:id/result` | View response analytics | Replace `:id` with the survey ID |
-| `/s/:slug` | Public survey form | https://survey-pink-two.vercel.app/s/youtube-ads |
+| Route                       | Purpose                 | Live URL                                             |
+| --------------------------- | ----------------------- | ---------------------------------------------------- |
+| `/`                         | Application home page   | https://survey-pink-two.vercel.app/                  |
+| `/login`                    | Admin login             | https://survey-pink-two.vercel.app/login             |
+| `/register`                 | Admin registration      | https://survey-pink-two.vercel.app/register          |
+| `/admin/surveys`            | List and manage surveys | https://survey-pink-two.vercel.app/admin/surveys     |
+| `/admin/surveys/new`        | Create a new survey     | https://survey-pink-two.vercel.app/admin/surveys/new |
+| `/admin/surveys/:id`        | Edit an existing survey | Replace `:id` with the survey ID                     |
+| `/admin/surveys/:id/result` | View response analytics | Replace `:id` with the survey ID                     |
+| `/s/:slug`                  | Public survey form      | https://survey-pink-two.vercel.app/s/youtube-ads     |
 
 ### Implemented API Routes
 
-| Area | Method and endpoint | Purpose |
-| --- | --- | --- |
-| Health | `GET /api/health` | Check database connectivity and application health |
-| Authentication | `/api/auth/*` | Better Auth login, registration, logout, and session routes |
-| Survey list | `GET /api/surveys` | Retrieve all surveys and response counts |
-| Survey list/create | `POST /api/surveys` | Create a new survey draft |
-| Survey detail/update | `GET/PUT /api/surveys/:id` | Retrieve or update a survey |
-| Survey deletion | `DELETE /api/surveys/:id` | Delete a survey and related versions/responses |
-| Survey publishing | `POST /api/surveys/:id/publish` | Publish or close a survey |
-| Survey analytics | `GET /api/surveys/:id/analytics` | Retrieve aggregated analytics |
-| Survey responses | `GET /api/surveys/:id/responses` | Retrieve paginated response submissions |
-| Public survey | `GET /api/public/surveys/:slug` | Retrieve a published survey for public rendering |
-| Public submission | `POST /api/public/surveys/:slug/response` | Submit answers to a public survey |
+| Area                 | Method and endpoint                       | Purpose                                                     |
+| -------------------- | ----------------------------------------- | ----------------------------------------------------------- |
+| Health               | `GET /api/health`                         | Check database connectivity and application health          |
+| Authentication       | `/api/auth/*`                             | Better Auth login, registration, logout, and session routes |
+| Survey list          | `GET /api/surveys`                        | Retrieve all surveys and response counts                    |
+| Survey list/create   | `POST /api/surveys`                       | Create a new survey draft                                   |
+| Survey detail/update | `GET/PUT /api/surveys/:id`                | Retrieve or update a survey                                 |
+| Survey deletion      | `DELETE /api/surveys/:id`                 | Delete a survey and related versions/responses              |
+| Survey publishing    | `POST /api/surveys/:id/publish`           | Publish or close a survey                                   |
+| Survey analytics     | `GET /api/surveys/:id/analytics`          | Retrieve aggregated analytics                               |
+| Survey responses     | `GET /api/surveys/:id/responses`          | Retrieve paginated response submissions                     |
+| Public survey        | `GET /api/public/surveys/:slug`           | Retrieve a published survey for public rendering            |
+| Public submission    | `POST /api/public/surveys/:slug/response` | Submit answers to a public survey                           |
 
 Admin endpoints require an authenticated Better Auth session. Public endpoints expose only published surveys and reject invalid or incomplete submissions.
 
@@ -271,7 +271,6 @@ Recommended production setup:
 3. Run `bun run db:generate` and `bun run db:migrate` before startup.
 4. Set `BETTER_AUTH_URL` to the final HTTPS origin.
 5. Build and start the application using `bun run build` and the platform-specific Bun or Node-compatible start command.
-
 
 ## License
 

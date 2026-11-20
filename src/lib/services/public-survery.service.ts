@@ -1,5 +1,9 @@
-import { axiosInstance, getApiErrorMessage } from "../axios"
-import type { GetPublicSurveyResponse, SubmitSurveyPayload, SubmitSurveyResponse } from "../types/public-suvery.type"
+import { axiosInstance, getApiErrorMessage } from '../axios'
+import type {
+  GetPublicSurveyResponse,
+  SubmitSurveyPayload,
+  SubmitSurveyResponse,
+} from '../types/public-suvery.type'
 
 export const getPublicSurveyBySlug = async (
   slug: string,
@@ -11,9 +15,7 @@ export const getPublicSurveyBySlug = async (
 
     return data
   } catch (error: unknown) {
-    throw new Error(
-      getApiErrorMessage(error, 'Failed to fetch survey'),
-    )
+    throw new Error(getApiErrorMessage(error, 'Failed to fetch survey'))
   }
 }
 
@@ -29,8 +31,6 @@ export const submitSurvey = async (
 
     return data
   } catch (error: unknown) {
-    throw new Error(
-      getApiErrorMessage(error, 'Failed to submit survey'),
-    )
+    throw new Error(getApiErrorMessage(error, 'Failed to submit survey'))
   }
 }

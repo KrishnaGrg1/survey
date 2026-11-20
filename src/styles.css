@@ -370,7 +370,6 @@ a {
   }
 }
 
-
 /* =================================
    PREMIUM UI DESIGN SYSTEM
 ================================= */
@@ -379,12 +378,10 @@ a {
   --radius: 0.85rem;
 
   --shadow-soft:
-    0 4px 12px rgba(23, 58, 64, 0.04),
-    0 12px 30px rgba(23, 58, 64, 0.06);
+    0 4px 12px rgba(23, 58, 64, 0.04), 0 12px 30px rgba(23, 58, 64, 0.06);
 
   --shadow-hover:
-    0 8px 20px rgba(23, 58, 64, 0.07),
-    0 20px 40px rgba(23, 58, 64, 0.1);
+    0 8px 20px rgba(23, 58, 64, 0.07), 0 20px 40px rgba(23, 58, 64, 0.1);
 }
 
 /* Page layout */
@@ -432,11 +429,7 @@ a {
 }
 
 .island-shell:hover {
-  border-color: color-mix(
-    in oklab,
-    var(--lagoon) 35%,
-    var(--line)
-  );
+  border-color: color-mix(in oklab, var(--lagoon) 35%, var(--line));
 }
 
 /* Interactive cards */
@@ -476,7 +469,7 @@ a {
 
 /* Inputs */
 
-input:not([type="checkbox"]),
+input:not([type='checkbox']),
 textarea,
 select {
   transition:
@@ -489,8 +482,7 @@ textarea:focus-visible,
 select:focus-visible {
   outline: none;
   border-color: var(--lagoon);
-  box-shadow: 0 0 0 3px
-    color-mix(in oklab, var(--lagoon) 18%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--lagoon) 18%, transparent);
 }
 
 /* Status indicators */

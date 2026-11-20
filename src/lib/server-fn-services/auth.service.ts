@@ -43,7 +43,7 @@ export const signIn = async (data: { email: string; password: string }) => {
         message: error.message || 'Invalid email or password',
       }
     }
-    console.log("data",result)
+    console.log('data', result)
 
     return {
       success: true,

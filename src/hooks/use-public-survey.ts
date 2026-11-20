@@ -1,12 +1,14 @@
-import { getPublicSurveyBySlug, submitSurvey } from "#/lib/services/public-survery.service";
-import type { SubmitSurveyPayload } from "#/lib/types/public-suvery.type";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { toast } from "sonner";
+import {
+  getPublicSurveyBySlug,
+  submitSurvey,
+} from '#/lib/services/public-survery.service'
+import type { SubmitSurveyPayload } from '#/lib/types/public-suvery.type'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { toast } from 'sonner'
 
 export function useSubmitSurvey(slug: string) {
   return useMutation({
-    mutationFn: (payload: SubmitSurveyPayload) =>
-      submitSurvey(slug, payload),
+    mutationFn: (payload: SubmitSurveyPayload) => submitSurvey(slug, payload),
 
     onSuccess: () => {
       toast.success('Survey submitted successfully')
